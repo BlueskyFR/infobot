@@ -129,37 +129,52 @@ function setRole(message, args) {
   // '727514400596164694' -> INFO 0
 
 function timeMachine(message){
+
   let members = bot.guilds.get("727514400541638737").members.array();
   let roles = bot.guilds.get("727514400541638737").roles.array();
 
-  for(let i=0 ; i < members.length ; i++){
-    
-    //Does not execute the roles swap on the bot itself.
-    // 727511079223033928 => Bot ID (To be updated depending on the other server's bot)
-    if(members[i].user.id != '727511079223033928'){
-      let userRoles = members[i]._roles;     
-      console.log(userRoles)
-      
-      // INFO 0 -> INFO 1
-      if(userRoles.includes(`${roles.find(r => r.name === "INFO 0")}`.replace(/[@<?&>]/g, ''))){
-        members[i].addRole(roles.find(r => r.name === "INFO 1"));
-        members[i].removeRole(roles.find(r => r.name === "INFO 0"));
-      } 
-      // INFO 1 -> INFO 2
-      else if(userRoles.includes(`${roles.find(r => r.name === "INFO 1")}`.replace(/[@<?&>]/g, ''))){
-        members[i].addRole(roles.find(r => r.name === "INFO 2"));
-        members[i].removeRole(roles.find(r => r.name === "INFO 1"));
-      }
-      // INFO 2 -> INFO +
-      else if(userRoles.includes(`${roles.find(r => r.name === "INFO 2")}`.replace(/[@<?&>]/g, ''))){
-        members[i].addRole(roles.find(r => r.name === "INFO +"));
-        members[i].removeRole(roles.find(r => r.name === "INFO 2"));
-      }      
-        
-    }
+  let userRolesAdminCheck = message.member._roles;
 
+  //If command executed by admninistrator, then here it goes
+  if(userRolesAdminCheck.includes(`${roles.find(r => r.name === "Administrateur")}`.replace(/[@<?&>]/g, ''))){
+    console.log("admin");
+    message.channel.send(
+      `✅ Attache ta ceinture Marty Z'EST PARTIIII !!!`
+    );
+
+    for(let i=0 ; i < members.length ; i++){
+
+      //Does not execute the roles swap on the bot itself.
+      // 727511079223033928 => Bot ID (To be updated depending on the other server's bot)
+      if(members[i].user.id != '727511079223033928'){
+        let userRoles = members[i]._roles;     
+        console.log(userRoles)
+        
+        // INFO 0 -> INFO 1
+        if(userRoles.includes(`${roles.find(r => r.name === "INFO 0")}`.replace(/[@<?&>]/g, ''))){
+          members[i].addRole(roles.find(r => r.name === "INFO 1"));
+          members[i].removeRole(roles.find(r => r.name === "INFO 0"));
+        } 
+        // INFO 1 -> INFO 2
+        else if(userRoles.includes(`${roles.find(r => r.name === "INFO 1")}`.replace(/[@<?&>]/g, ''))){
+          members[i].addRole(roles.find(r => r.name === "INFO 2"));
+          members[i].removeRole(roles.find(r => r.name === "INFO 1"));
+        }
+        // INFO 2 -> INFO +
+        else if(userRoles.includes(`${roles.find(r => r.name === "INFO 2")}`.replace(/[@<?&>]/g, ''))){
+          members[i].addRole(roles.find(r => r.name === "INFO +"));
+          members[i].removeRole(roles.find(r => r.name === "INFO 2"));
+        }      
+      }
+    }
   }
-  
+  //If not, you can fuck yourself lol, you prick 
+  else{
+    message.channel.send(
+      `❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`
+    );
+  }
+    
 }
 
 bot.login(token);
