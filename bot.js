@@ -20,11 +20,14 @@ bot.on("message", message => {
     case "role":
       setRole(message, args);
       break;
+<<<<<<< HEAD
 
     //Added by Yoan
     case "timemachine":
       timeMachine(message);
       break;
+=======
+>>>>>>> a674fb95f56eb16f86147082b925df9faa90e960
   }
 });
 
@@ -122,6 +125,7 @@ function setRole(message, args) {
   }
 }
 
+<<<<<<< HEAD
 
   // '727514400600096769' -> INFO +
   // '727514400600096772' -> INFO 2
@@ -179,4 +183,6 @@ function timeMachine(message){
     
 }
 
+=======
+>>>>>>> a674fb95f56eb16f86147082b925df9faa90e960
 bot.login(token);
