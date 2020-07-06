@@ -29,16 +29,12 @@ bot.on("message", (message) => {
 
 bot.on("guildMemberAdd", (member) => {
   member.createDM().then((DMChannel) => {
-    let welcomeMsg =
-      "Salut, et bienvenue sur le serveur **INTER-INFO ANNECY** !\n\n";
-    welcomeMsg +=
-      "N'oublie pas de consulter le salon #bienvenue et de t'attribuer tes rôles !\n";
+    let welcomeMsg = "Salut, et bienvenue sur le serveur **INTER-INFO ANNECY** !\n\n";
+    welcomeMsg += "N'oublie pas de consulter le salon #bienvenue et de t'attribuer tes rôles !\n";
     welcomeMsg +=
       "Par exemple, si tu es en Info1 et dans le groupe A, tapes `!role info1 a` dans le salon #bienvenue.\n";
-    welcomeMsg +=
-      "Tu peux également consulter la liste des rôles disponibles avec `!role`.\n";
-    welcomeMsg +=
-      "Pour toute question, n'hésite pas à poser une question @Administrateur.\n\n";
+    welcomeMsg += "Tu peux également consulter la liste des rôles disponibles avec `!role`.\n";
+    welcomeMsg += "Pour toute question, n'hésite pas à poser une question @Administrateur.\n\n";
     welcomeMsg += "Encore bienvenue de la part de tous les Info :wink: !";
 
     DMChannel.send(welcomeMsg);
@@ -67,16 +63,12 @@ const roleList = {
 };
 
 function setRole(message, args) {
-  message.react(
-    message.guild.emojis.cache.find((emoji) => emoji.name === "party_wumpus")
-  );
+  message.react(message.guild.emojis.cache.find((emoji) => emoji.name === "party_wumpus"));
 
   if (args.length === 0) {
     // Display role list
     let description = "**Role à taper** : rôle obtenu\n";
-    Object.keys(roleList).forEach(
-      (role) => (description += `\n**${role}** : ${roleList[role]}`)
-    );
+    Object.keys(roleList).forEach((role) => (description += `\n**${role}** : ${roleList[role]}`));
 
     const embed = new Discord.RichEmbed()
       .setColor([255, 0, 0])
@@ -102,19 +94,11 @@ function setRole(message, args) {
 
       for (let role of roles) {
         if (message.member.roles.cache.some((r) => r.name == role)) {
-          message.member.roles.remove(
-            message.guild.roles.cache.find((r) => r.name === role)
-          );
-          message.channel.send(
-            `❌ ${message.author} le rôle \`${role}\` t'a été retiré !`
-          );
+          message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === role));
+          message.channel.send(`❌ ${message.author} le rôle \`${role}\` t'a été retiré !`);
         } else {
-          message.member.roles.add(
-            message.guild.roles.cache.find((r) => r.name === role)
-          );
-          message.channel.send(
-            `✅ ${message.author} le rôle \`${role}\` t'a été ajouté !`
-          );
+          message.member.roles.add(message.guild.roles.cache.find((r) => r.name === role));
+          message.channel.send(`✅ ${message.author} le rôle \`${role}\` t'a été ajouté !`);
         }
       }
     }
@@ -127,29 +111,21 @@ async function timeMachine(message) {
   const guild = message.guild;
 
   const roleMappings = {};
-  for (let role of roleCycle)
-    roleMappings[role] = guild.roles.cache.find((r) => r.name == role);
+  for (let role of roleCycle) roleMappings[role] = guild.roles.cache.find((r) => r.name == role);
 
   let members = guild.members.cache.array();
 
-  let isAdmin = message.member.hasPermission(
-    Discord.Permissions.FLAGS.ADMINISTRATOR
-  );
+  let isAdmin = message.member.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR);
 
-  //If command executed by admninistrator, then here it goes
   if (!isAdmin) {
     // Permission error
-    message.channel.send(
-      `❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`
-    );
+    message.channel.send(`❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`);
 
     return;
   }
 
   const emoji = guild.emojis.cache.find((e) => e.name === "party_wumpus");
-  let msg = message.channel.send(
-    `${emoji} Attache ta ceinture Marty Z'EST PARTIIII !!!`
-  );
+  let msg = message.channel.send(`${emoji} Attache ta ceinture Marty Z'EST PARTIIII !!!`);
 
   let count = 0;
 
