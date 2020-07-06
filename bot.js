@@ -21,7 +21,6 @@ bot.on("message", (message) => {
       setRole(message, args);
       break;
 
-    //Added by Yoan
     case "timemachine":
       timeMachine(message);
       break;
@@ -69,7 +68,7 @@ const roleList = {
 
 function setRole(message, args) {
   message.react(
-    message.guild.emojis.find((emoji) => emoji.name === "party_wumpus")
+    message.guild.emojis.cache.find((emoji) => emoji.name === "party_wumpus")
   );
 
   if (args.length === 0) {
@@ -102,16 +101,16 @@ function setRole(message, args) {
       }
 
       for (let role of roles) {
-        if (message.member.roles.some((r) => r.name == role)) {
-          message.member.removeRole(
-            message.guild.roles.find((r) => r.name === role)
+        if (message.member.roles.cache.some((r) => r.name == role)) {
+          message.member.roles.remove(
+            message.guild.roles.cache.find((r) => r.name === role)
           );
           message.channel.send(
             `❌ ${message.author} le rôle \`${role}\` t'a été retiré !`
           );
         } else {
-          message.member.addRole(
-            message.guild.roles.find((r) => r.name === role)
+          message.member.roles.add(
+            message.guild.roles.cache.find((r) => r.name === role)
           );
           message.channel.send(
             `✅ ${message.author} le rôle \`${role}\` t'a été ajouté !`
@@ -128,9 +127,10 @@ function setRole(message, args) {
 // '727514400596164694' -> INFO 0
 
 function timeMachine(message) {
-  console.log(bot.user.id);
-  let members = bot.guilds.get("727514400541638737").members.array();
-  let roles = bot.guilds.get("727514400541638737").roles.array();
+  const guild = message.guild;
+
+  let members = guild.members.cache.array();
+  let roles = guild.roles.cache.array();
 
   let userRolesAdminCheck = message.member._roles;
 
@@ -147,11 +147,9 @@ function timeMachine(message) {
     message.channel.send(`✅ Attache ta ceinture Marty Z'EST PARTIIII !!!`);
 
     for (let i = 0; i < members.length; i++) {
-      //Does not execute the roles swap on the bot itself.
-      // 727511079223033928 => Bot ID (To be updated depending on the other server's bot)
-      if (members[i].user.id != "727511079223033928") {
+      // Skip role swap on the bot itself
+      if (members[i].user.id != bot.user.id) {
         let userRoles = members[i]._roles;
-        console.log(userRoles);
 
         // INFO 0 -> INFO 1
         if (
@@ -159,8 +157,8 @@ function timeMachine(message) {
             `${roles.find((r) => r.name === "INFO 0")}`.replace(/[@<?&>]/g, "")
           )
         ) {
-          members[i].addRole(roles.find((r) => r.name === "INFO 1"));
-          members[i].removeRole(roles.find((r) => r.name === "INFO 0"));
+          members[i].roles.add(roles.find((r) => r.name === "INFO 1"));
+          members[i].roles.remove(roles.find((r) => r.name === "INFO 0"));
         }
         // INFO 1 -> INFO 2
         else if (
@@ -168,8 +166,8 @@ function timeMachine(message) {
             `${roles.find((r) => r.name === "INFO 1")}`.replace(/[@<?&>]/g, "")
           )
         ) {
-          members[i].addRole(roles.find((r) => r.name === "INFO 2"));
-          members[i].removeRole(roles.find((r) => r.name === "INFO 1"));
+          members[i].roles.add(roles.find((r) => r.name === "INFO 2"));
+          members[i].roles.remove(roles.find((r) => r.name === "INFO 1"));
         }
         // INFO 2 -> INFO +
         else if (
@@ -177,14 +175,13 @@ function timeMachine(message) {
             `${roles.find((r) => r.name === "INFO 2")}`.replace(/[@<?&>]/g, "")
           )
         ) {
-          members[i].addRole(roles.find((r) => r.name === "INFO +"));
-          members[i].removeRole(roles.find((r) => r.name === "INFO 2"));
+          members[i].roles.add(roles.find((r) => r.name === "INFO +"));
+          members[i].roles.remove(roles.find((r) => r.name === "INFO 2"));
         }
       }
     }
-  }
-  //If not, you can fuck yourself lol, you prick
-  else {
+  } else {
+    // Permission error
     message.channel.send(
       `❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`
     );
