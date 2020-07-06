@@ -9,7 +9,7 @@ bot.on("ready", () => {
   console.log(`Logged in as ${bot.user.tag}`);
 });
 
-bot.on("message", message => {
+bot.on("message", (message) => {
   if (!message.content.startsWith(prefix) || message.author.bot) return;
 
   const args = message.content.slice(prefix.length).split(/ +/);
@@ -20,21 +20,21 @@ bot.on("message", message => {
     case "role":
       setRole(message, args);
       break;
+
+    case "timemachine":
+      timeMachine(message);
+      break;
   }
 });
 
-bot.on("guildMemberAdd", member => {
-  member.createDM().then(DMChannel => {
-    let welcomeMsg =
-      "Salut, et bienvenue sur le serveur **INTER-INFO ANNECY** !\n\n";
-    welcomeMsg +=
-      "N'oublie pas de consulter le salon #bienvenue et de t'attribuer tes rôles !\n";
+bot.on("guildMemberAdd", (member) => {
+  member.createDM().then((DMChannel) => {
+    let welcomeMsg = "Salut, et bienvenue sur le serveur **INTER-INFO ANNECY** !\n\n";
+    welcomeMsg += "N'oublie pas de consulter le salon #bienvenue et de t'attribuer tes rôles !\n";
     welcomeMsg +=
       "Par exemple, si tu es en Info1 et dans le groupe A, tapes `!role info1 a` dans le salon #bienvenue.\n";
-    welcomeMsg +=
-      "Tu peux également consulter la liste des rôles disponibles avec `!role`.\n";
-    welcomeMsg +=
-      "Pour toute question, n'hésite pas à poser une question @Administrateur.\n\n";
+    welcomeMsg += "Tu peux également consulter la liste des rôles disponibles avec `!role`.\n";
+    welcomeMsg += "Pour toute question, n'hésite pas à poser une question @Administrateur.\n\n";
     welcomeMsg += "Encore bienvenue de la part de tous les Info :wink: !";
 
     DMChannel.send(welcomeMsg);
@@ -59,20 +59,16 @@ const roleList = {
 
   "lp-dim": ["LP-DIM", "Licence Pro"],
   "lp-cpinfo": ["LP-CPINFO", "Licence Pro"],
-  "lp-bdd": ["LP-BDD", "Licence Pro"]
+  "lp-bdd": ["LP-BDD", "Licence Pro"],
 };
 
 function setRole(message, args) {
-  message.react(
-    message.guild.emojis.find(emoji => emoji.name === "party_wumpus")
-  );
+  message.react(message.guild.emojis.cache.find((emoji) => emoji.name === "party_wumpus"));
 
   if (args.length === 0) {
     // Display role list
     let description = "**Role à taper** : rôle obtenu\n";
-    Object.keys(roleList).forEach(
-      role => (description += `\n**${role}** : ${roleList[role]}`)
-    );
+    Object.keys(roleList).forEach((role) => (description += `\n**${role}** : ${roleList[role]}`));
 
     const embed = new Discord.RichEmbed()
       .setColor([255, 0, 0])
@@ -97,24 +93,59 @@ function setRole(message, args) {
       }
 
       for (let role of roles) {
-        if (message.member.roles.some(r => r.name == role)) {
-          message.member.removeRole(
-            message.guild.roles.find(r => r.name === role)
-          );
-          message.channel.send(
-            `❌ ${message.author} le rôle \`${role}\` t'a été retiré !`
-          );
+        if (message.member.roles.cache.some((r) => r.name == role)) {
+          message.member.roles.remove(message.guild.roles.cache.find((r) => r.name === role));
+          message.channel.send(`❌ ${message.author} le rôle \`${role}\` t'a été retiré !`);
         } else {
-          message.member.addRole(
-            message.guild.roles.find(r => r.name === role)
-          );
-          message.channel.send(
-            `✅ ${message.author} le rôle \`${role}\` t'a été ajouté !`
-          );
+          message.member.roles.add(message.guild.roles.cache.find((r) => r.name === role));
+          message.channel.send(`✅ ${message.author} le rôle \`${role}\` t'a été ajouté !`);
         }
       }
     }
   }
+}
+
+const roleCycle = ["INFO 0", "INFO 1", "INFO 2", "INFO +"];
+
+async function timeMachine(message) {
+  const guild = message.guild;
+
+  const roleMappings = {};
+  for (let role of roleCycle) roleMappings[role] = guild.roles.cache.find((r) => r.name == role);
+
+  let members = guild.members.cache.array();
+
+  let isAdmin = message.member.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR);
+
+  if (!isAdmin) {
+    // Permission error
+    message.channel.send(`❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`);
+
+    return;
+  }
+
+  const emoji = guild.emojis.cache.find((e) => e.name === "party_wumpus");
+  let msg = message.channel.send(`${emoji} Attache ta ceinture Marty Z'EST PARTIIII !!!`);
+
+  let count = 0;
+
+  for (let member of members) {
+    for (let role of member.roles.cache.array()) {
+      let index = roleCycle.indexOf(role.name);
+
+      // If the role is in the cycle and is not the last one
+      if (index != -1 && index < roleCycle.length - 1) {
+        count++;
+        // Update role
+        let nextRole = roleCycle[index + 1];
+
+        member.roles.remove(role);
+        member.roles.add(roleMappings[nextRole]);
+      }
+    }
+  }
+
+  (await msg).edit(`✅ **${count}** rôle(s) ont été mis à jour !`);
 }
 
 bot.login(token);
