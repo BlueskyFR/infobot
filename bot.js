@@ -130,6 +130,7 @@ function setRole(message, args) {
 
 function timeMachine(message){
 
+  console.log(bot.user.id);
   let members = bot.guilds.get("727514400541638737").members.array();
   let roles = bot.guilds.get("727514400541638737").roles.array();
 
@@ -167,6 +168,7 @@ function timeMachine(message){
         }      
       }
     }
+
   }
   //If not, you can fuck yourself lol, you prick 
   else{
