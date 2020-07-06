@@ -6,3 +6,4 @@ Un bot créé par les DUT Info 2ème année :)
 
 - Hugo Cartigny (BlueskyFR)
 - Théo Gimenez (LordChicken)
+- Yoan Rouleau (YoanRouleau)
