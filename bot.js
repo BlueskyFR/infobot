@@ -24,6 +24,10 @@ bot.on("message", (message) => {
     case "timemachine":
       timeMachine(message);
       break;
+
+    case "removegroups":
+      removeGroups(message);
+      break;
   }
 });
 
@@ -146,6 +150,48 @@ async function timeMachine(message) {
   }
 
   (await msg).edit(`✅ **${count}** rôle(s) ont été mis à jour !`);
+}
+
+const rolesToRemove = [
+  "G21",
+  "G22",
+  "G23",
+  "G24",
+  "G25",
+  "Groupe A",
+  "Groupe B",
+  "Groupe C",
+  "Groupe D",
+];
+
+async function removeGroups(message) {
+  let isAdmin = message.member.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR);
+
+  if (!isAdmin) {
+    // Permission error
+    message.channel.send(`❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`);
+
+    return;
+  }
+
+  const guild = message.guild;
+  const members = guild.members.cache.array();
+
+  const emoji = guild.emojis.cache.find((e) => e.name === "party_wumpus");
+  let msg = message.channel.send(`${emoji} Batch removal in progress...`);
+
+  let count = 0;
+
+  for (let member of members) {
+    for (let role of member.roles.cache.array()) {
+      if (rolesToRemove.includes(role.name)) {
+        count++;
+        member.roles.remove(role);
+      }
+    }
+  }
+
+  (await msg).edit(`✅ **${count}** rôle(s) de groupes ont été retirés !`);
 }
 
 bot.login(token);
