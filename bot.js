@@ -121,71 +121,55 @@ function setRole(message, args) {
   }
 }
 
-// '727514400600096769' -> INFO +
-// '727514400600096772' -> INFO 2
-// '727514400600096773' -> INFO 1
-// '727514400596164694' -> INFO 0
+const roleCycle = ["INFO 0", "INFO 1", "INFO 2", "INFO +"];
 
-function timeMachine(message) {
+async function timeMachine(message) {
   const guild = message.guild;
 
-  let members = guild.members.cache.array();
-  let roles = guild.roles.cache.array();
+  const roleMappings = {};
+  for (let role of roleCycle)
+    roleMappings[role] = guild.roles.cache.find((r) => r.name == role);
 
-  let userRolesAdminCheck = message.member._roles;
+  let members = guild.members.cache.array();
+
+  let isAdmin = message.member.hasPermission(
+    Discord.Permissions.FLAGS.ADMINISTRATOR
+  );
 
   //If command executed by admninistrator, then here it goes
-  if (
-    userRolesAdminCheck.includes(
-      `${roles.find((r) => r.name === "Administrateur")}`.replace(
-        /[@<?&>]/g,
-        ""
-      )
-    )
-  ) {
-    console.log("admin");
-    message.channel.send(`✅ Attache ta ceinture Marty Z'EST PARTIIII !!!`);
-
-    for (let i = 0; i < members.length; i++) {
-      // Skip role swap on the bot itself
-      if (members[i].user.id != bot.user.id) {
-        let userRoles = members[i]._roles;
-
-        // INFO 0 -> INFO 1
-        if (
-          userRoles.includes(
-            `${roles.find((r) => r.name === "INFO 0")}`.replace(/[@<?&>]/g, "")
-          )
-        ) {
-          members[i].roles.add(roles.find((r) => r.name === "INFO 1"));
-          members[i].roles.remove(roles.find((r) => r.name === "INFO 0"));
-        }
-        // INFO 1 -> INFO 2
-        else if (
-          userRoles.includes(
-            `${roles.find((r) => r.name === "INFO 1")}`.replace(/[@<?&>]/g, "")
-          )
-        ) {
-          members[i].roles.add(roles.find((r) => r.name === "INFO 2"));
-          members[i].roles.remove(roles.find((r) => r.name === "INFO 1"));
-        }
-        // INFO 2 -> INFO +
-        else if (
-          userRoles.includes(
-            `${roles.find((r) => r.name === "INFO 2")}`.replace(/[@<?&>]/g, "")
-          )
-        ) {
-          members[i].roles.add(roles.find((r) => r.name === "INFO +"));
-          members[i].roles.remove(roles.find((r) => r.name === "INFO 2"));
-        }
-      }
-    }
-  } else {
+  if (!isAdmin) {
     // Permission error
     message.channel.send(
       `❌ ${message.author} T'a pas le droit frer. Vil gredin D:<`
     );
+
+    return;
   }
+
+  const emoji = guild.emojis.cache.find((e) => e.name === "party_wumpus");
+  let msg = message.channel.send(
+    `${emoji} Attache ta ceinture Marty Z'EST PARTIIII !!!`
+  );
+
+  let count = 0;
+
+  for (let member of members) {
+    for (let role of member.roles.cache.array()) {
+      let index = roleCycle.indexOf(role.name);
+
+      // If the role is in the cycle and is not the last one
+      if (index != -1 && index < roleCycle.length - 1) {
+        count++;
+        // Update role
+        let nextRole = roleCycle[index + 1];
+
+        member.roles.remove(role);
+        member.roles.add(roleMappings[nextRole]);
+      }
+    }
+  }
+
+  (await msg).edit(`✅ **${count}** rôle(s) ont été mis à jour !`);
 }
 
 bot.login(token);
