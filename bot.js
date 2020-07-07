@@ -1,8 +1,8 @@
-const Discord = require("discord.js");
+const { Client, MessageEmbed } = require("discord.js");
 const configFile = require("./config.json");
 const { prefix, token } = configFile;
 
-const bot = new Discord.Client();
+const bot = new Client();
 
 bot.on("ready", () => {
   bot.user.setActivity("les Info1 | !help", { type: "WATCHING" });
@@ -74,7 +74,7 @@ function setRole(message, args) {
     let description = "**Role à taper** : rôle obtenu\n";
     Object.keys(roleList).forEach((role) => (description += `\n**${role}** : ${roleList[role]}`));
 
-    const embed = new Discord.RichEmbed()
+    const embed = new MessageEmbed()
       .setColor([255, 0, 0])
       .setTitle("Liste des rôles autorisés :")
       .setAuthor("Rôles", message.client.user.displayAvatarURL)
