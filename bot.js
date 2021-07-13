@@ -1,4 +1,4 @@
-const { Client, MessageEmbed } = require("discord.js");
+const { Client, MessageEmbed, Permissions } = require("discord.js");
 const configFile = require("./config.json");
 const { prefix, token } = configFile;
 
@@ -117,9 +117,9 @@ async function timeMachine(message) {
   const roleMappings = {};
   for (let role of roleCycle) roleMappings[role] = guild.roles.cache.find((r) => r.name == role);
 
-  let members = guild.members.cache.array();
+  let members = (await guild.members.fetch()).array();
 
-  let isAdmin = message.member.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR);
+  let isAdmin = message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR);
 
   if (!isAdmin) {
     // Permission error
@@ -165,7 +165,7 @@ const rolesToRemove = [
 ];
 
 async function removeGroups(message) {
-  let isAdmin = message.member.hasPermission(Discord.Permissions.FLAGS.ADMINISTRATOR);
+  let isAdmin = message.member.hasPermission(Permissions.FLAGS.ADMINISTRATOR);
 
   if (!isAdmin) {
     // Permission error

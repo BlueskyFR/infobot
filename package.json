@@ -10,7 +10,7 @@
     "start": "nodemon"
   },
   "dependencies": {
-    "discord.js": "12.2.0"
+    "discord.js": "12.5.3"
   },
   "devDependencies": {
     "husky": ">=4",
