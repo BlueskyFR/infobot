@@ -47,8 +47,8 @@ bot.on("guildMemberAdd", (member) => {
 
 // syntax: { command: role(s) }
 const roleList = {
-  info1: ["INFO 1", "Promo 2020-2022"],
-  info2: ["INFO 2", "Promo 2019-2021"],
+  info1: ["INFO 1", "Promo 2021-2024"],
+  info2: ["INFO 2", "Promo 2020-2022"],
   "info+": "INFO +",
 
   a: "Groupe A",
