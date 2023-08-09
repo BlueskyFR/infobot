@@ -47,8 +47,9 @@ bot.on("guildMemberAdd", (member) => {
 
 // syntax: { command: role(s) }
 const roleList = {
-  info1: ["INFO 1", "Promo 2022-2025"],
-  info2: ["INFO 2", "Promo 2021-2024"],
+  info1: ["INFO 1", "Promo 2023-2026"],
+  info2: ["INFO 2", "Promo 2022-2025"],
+  info2: ["INFO 3", "Promo 2021-2024"],
   "info+": "INFO +",
 
   a: "Groupe A",
@@ -109,7 +110,7 @@ function setRole(message, args) {
   }
 }
 
-const roleCycle = ["INFO 0", "INFO 1", "INFO 2", "INFO +"];
+const roleCycle = ["INFO 0", "INFO 1", "INFO 2", "INFO 3", "INFO +"];
 
 async function timeMachine(message) {
   const guild = message.guild;
