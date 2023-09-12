@@ -49,7 +49,8 @@ bot.on("guildMemberAdd", (member) => {
 const roleList = {
   info1: ["INFO 1", "Promo 2023-2026"],
   info2: ["INFO 2", "Promo 2022-2025"],
-  info2: ["INFO 3", "Promo 2021-2024"],
+  info3: ["INFO 3", "Promo 2021-2024"],
+  alternance: "Alternance",
   "info+": "INFO +",
 
   a: "Groupe A",
@@ -61,10 +62,6 @@ const roleList = {
   g23: "G23",
   g24: "G24",
   g25: "G25",
-
-  "lp-dim": ["LP-DIM", "Licence Pro"],
-  "lp-cpinfo": ["LP-CPINFO", "Licence Pro"],
-  "lp-bdd": ["LP-BDD", "Licence Pro"],
 };
 
 function setRole(message, args) {
